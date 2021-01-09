@@ -29,7 +29,7 @@ public class SwaggerConfig {
 
         return new ApiInfoBuilder().title("Employee API")
                 .description("User's Custom Job List")
-                .contact(new Contact("Yajuvendra Singh", "www.yaju.com", "Yujuvendra_Singh@abc.com"))
+                .contact(new Contact("Yajuvendra Singh", "www.abc.com", "Yujuvendra_Singh@abc.com"))
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .version("1.0-SNAPSHOT")
@@ -41,7 +41,7 @@ public class SwaggerConfig {
                 "This API is for creating the custom Job list for the User ",
                 "1.0",
                 "API Terms of Service URL",
-                new Contact("Comcast", "www.comcast.com", "Yujuvendra_Singh@comcast.com"),
+                new Contact("ABC", "www.abc.com", "Yujuvendra_Singh@abc.com"),
                 "API License",
                 "API License URL",
                 Collections.emptyList()
