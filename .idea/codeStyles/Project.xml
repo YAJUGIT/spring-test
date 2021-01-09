@@ -1,0 +1,12 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <yaml>
+      <option name="BLOCK_MAPPING_ON_NEW_LINE" value="true" />
+    </yaml>
+    <codeStyleSettings language="yaml">
+      <indentOptions>
+        <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />
+      </indentOptions>
+    </codeStyleSettings>
+  </code_scheme>
+</component>
