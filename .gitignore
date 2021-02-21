@@ -1,6 +1,8 @@
 HELP.md
 ### Maven ###
 rest-microservices/target
+h2-database/target
+
 !../.mvn/wrapper/maven-wrapper.jar
 
 .idea_modules/

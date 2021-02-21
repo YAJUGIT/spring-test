@@ -7,6 +7,7 @@ import com.employee.util.EmployeeUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,8 @@ class EmployeeControllerImplTest {
     void tearDown() {
     }
 
+
+//    @Ignore
     @Test
     void createEmployee() throws Exception {
         doNothing().when(employeeService).createEmployee(employee);
@@ -94,7 +97,7 @@ class EmployeeControllerImplTest {
         headers.add("userId", "abc@abc.com");
         //When
         when(employeeService.getEmployee(1)).thenReturn(Optional.ofNullable(employee));
-        MvcResult result = this.mockMvc.perform(get("/employee/-1")
+        MvcResult result = this.mockMvc.perform(get("/employee/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers))
                 .andDo(print()).andReturn();
@@ -111,6 +114,7 @@ class EmployeeControllerImplTest {
     }
 
     @Test
+    @Ignore
     void updateEmployee() {
 
     }
