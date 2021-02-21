@@ -3,6 +3,8 @@ package com.employee.controller.impl;
 import com.employee.controller.EmployeeController;
 import com.employee.dto.EmployeeDTO;
 import com.employee.entity.Employee;
+import com.employee.exception.EmployeeError;
+import com.employee.exception.EmployeeException;
 import com.employee.service.EmployeeService;
 import com.employee.util.EmployeeConstants;
 import com.employee.util.EmployeeUtil;
@@ -27,7 +29,12 @@ public class EmployeeControllerImpl implements EmployeeController {
 
     @Override
     public Optional<Employee> getEmployee(int id) {
+        validateId(id);
         return employeeService.getEmployee(id);
+    }
+
+    private void validateId(int id){
+        if(id<0) throw new EmployeeException(EmployeeError.JOB_LIST_EXISTS);
     }
 
     @Override

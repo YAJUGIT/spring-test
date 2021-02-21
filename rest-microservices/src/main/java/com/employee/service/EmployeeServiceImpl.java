@@ -1,6 +1,7 @@
 package com.employee.service;
 
 import com.employee.entity.Employee;
+import com.employee.exception.EmployeeError;
 import com.employee.exception.EmployeeException;
 import com.employee.repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> getEmployee(int id) throws EmployeeException {
-        return employeeRepo.findById(id);
+         return employeeRepo.findById(id);
     }
 
     @Override

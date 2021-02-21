@@ -94,7 +94,7 @@ class EmployeeControllerImplTest {
         headers.add("userId", "abc@abc.com");
         //When
         when(employeeService.getEmployee(1)).thenReturn(Optional.ofNullable(employee));
-        MvcResult result = this.mockMvc.perform(get("/employee/1")
+        MvcResult result = this.mockMvc.perform(get("/employee/-1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers))
                 .andDo(print()).andReturn();

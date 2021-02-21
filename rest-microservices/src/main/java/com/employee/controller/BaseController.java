@@ -25,6 +25,7 @@ public interface BaseController {
 
         LOG.debug("ErrorCode : {} and errormessage :{}" + errorResponse.getErrorCode() , ex.getMessage(), errorResponse.getErrorMessage());
         ObjectMapper mapper = new ObjectMapper();
-        return  mapper.writeValueAsString(errorResponse);
+//        return  mapper.writeValueAsString(errorResponse);
+        return "";
     }
 }
