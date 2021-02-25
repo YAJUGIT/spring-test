@@ -2,6 +2,7 @@ package com.employee.controller.impl;
 
 import com.employee.controller.EmployeeController;
 import com.employee.dto.EmployeeDTO;
+import com.employee.entity.Employee;
 import com.employee.exception.EmployeeError;
 import com.employee.exception.EmployeeException;
 import com.employee.service.EmployeeService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 public class EmployeeControllerImpl implements EmployeeController {
@@ -31,6 +33,7 @@ public class EmployeeControllerImpl implements EmployeeController {
 
     @Override
     public ResponseEntity<?> getEmployee(int id) {
+        validateId(id);
         return employeeService.getEmployee(id)
                 .map(employee -> {
                     try {
@@ -44,6 +47,17 @@ public class EmployeeControllerImpl implements EmployeeController {
                     }
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<List<Employee>> getEmployees() {
+        try {
+            return ResponseEntity.ok()
+                    .location((new URI("/employees")))
+                    .body(employeeService.findAll());
+        } catch (URISyntaxException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     private void validateId(long id) {
