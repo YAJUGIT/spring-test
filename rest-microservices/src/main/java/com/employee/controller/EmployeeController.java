@@ -23,12 +23,17 @@ public interface EmployeeController extends BaseController{
 
 
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Retrieve Employee Records for a given Id ",
-                    responseHeaders = @ResponseHeader(name = "Location", description = "The resulting URI of the delete User's Pref", response = Employee.class))})
+            @ApiResponse(code = 200, message = "Success : Retrieved Employee Records for a given Id ",
+                    responseHeaders = @ResponseHeader(name = "Location", description = "The resulting URI of the get Employee", response = Employee.class)),
+            @ApiResponse(code = 404, message = "Record Not Found : Request record do not exists ",
+                    responseHeaders = @ResponseHeader(name = "Location", description = "The resulting URI of the get Employee", response = Employee.class)),
+            @ApiResponse(code = 400, message = "Bad Request : Invalid Request",
+                    responseHeaders = @ResponseHeader(name = "Location", description = "The resulting URI of the get Employee", response = Employee.class)),
+    })
     @GetMapping(value = "/employee/{id}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    Optional<Employee> getEmployee(@PathVariable int id);
+    ResponseEntity<?> getEmployee(@PathVariable int id);
 
 
     @ApiResponses(value = {

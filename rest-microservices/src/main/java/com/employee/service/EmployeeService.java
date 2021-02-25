@@ -4,6 +4,7 @@ import com.employee.entity.Employee;
 import com.employee.exception.EmployeeException;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeService {
@@ -11,4 +12,5 @@ public interface EmployeeService {
     Optional<Employee> getEmployee(int id) throws EmployeeException;
     void updateEmployee(Employee employee) throws EmployeeException;
     void deleteEmployee(int id) throws EmployeeException;
+    List<Employee> findAll();
 }

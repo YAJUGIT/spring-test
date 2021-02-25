@@ -2,24 +2,26 @@ package com.employee.controller.impl;
 
 import com.employee.controller.EmployeeController;
 import com.employee.dto.EmployeeDTO;
-import com.employee.entity.Employee;
 import com.employee.exception.EmployeeError;
 import com.employee.exception.EmployeeException;
 import com.employee.service.EmployeeService;
 import com.employee.util.EmployeeConstants;
 import com.employee.util.EmployeeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @RestController
 public class EmployeeControllerImpl implements EmployeeController {
 
-    @Autowired
     EmployeeService employeeService;
+
+    public EmployeeControllerImpl(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @Override
     public ResponseEntity<String> createEmployee(EmployeeDTO employeeDTO) {
@@ -28,13 +30,24 @@ public class EmployeeControllerImpl implements EmployeeController {
     }
 
     @Override
-    public Optional<Employee> getEmployee(int id) {
-        validateId(id);
-        return employeeService.getEmployee(id);
+    public ResponseEntity<?> getEmployee(int id) {
+        return employeeService.getEmployee(id)
+                .map(employee -> {
+                    try {
+                        return ResponseEntity
+                                .ok()
+                                .eTag(Integer.toString(employee.getId()))
+                                .location(new URI("/employee/" + employee.getId()))
+                                .body(employee);
+                    } catch (URISyntaxException e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    private void validateId(int id){
-        if(id<0) throw new EmployeeException(EmployeeError.JOB_LIST_EXISTS);
+    private void validateId(long id) {
+        if (id < 0) throw new EmployeeException(EmployeeError.EMPLOYEE_ID_IS_INVALID);
     }
 
     @Override

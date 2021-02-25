@@ -2,11 +2,9 @@ package com.employee.exception;
 
 public enum EmployeeError {
     CUSTOM_JOB_NAME_IS_NULL(10001,"Job Menu Item is null "),
-    USER_ID_IS_NULL(10002,"User Id is null "),
-    JOB_LIST_EXISTS(10003,"Job Menu Item Exists , Please provide unique name "),
-    USER_PREF_CREATION_FAILED(10004, "User Pref creation failed "),
-    USER_PREF_UPDATION_FAILED(10005, "User Pref Update failed "),
-    USER_PREF_DELETION_FAILED( 10006, "User Pref Deletion Failed");
+    EMPLOYEE_ID_IS_NULL(10002,"Employee Id is null "),
+    EMPLOYEE_NOT_FOUND(10003,"Employee not found"),
+    EMPLOYEE_ID_IS_INVALID(10004,"Employee Id is Invalid");
 
     private int code;
     private String message;

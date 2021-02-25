@@ -1,0 +1,11 @@
+employee:
+  - id: 1
+    firstName: "Hareesh"
+    lastName: "Chandra"
+    email: "email@gmail.com"
+    phoneNumber: "123-456-123"
+  - id: 2
+    firstName: "Ghanshyam"
+    lastName: "Das"
+    email: "Das@gmail.com"
+    phoneNumber: "123-456-123"

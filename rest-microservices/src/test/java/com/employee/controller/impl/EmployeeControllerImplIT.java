@@ -6,12 +6,10 @@ import com.employee.service.EmployeeService;
 import com.employee.util.EmployeeUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,24 +17,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureMockMvc
-class EmployeeControllerImplTest {
+class EmployeeControllerImplIT {
     EmployeeDTO employeeDTO;
     Employee employee;
+
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -59,7 +58,8 @@ class EmployeeControllerImplTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+//        MockitoAnnotations.initMocks(this);
+        employeeService = mock(EmployeeService.class);
         employeeDTO = EmployeeDTO.builder()
                 .id(1)
                 .firstName("firstName")
@@ -74,9 +74,7 @@ class EmployeeControllerImplTest {
     void tearDown() {
     }
 
-
-//    @Ignore
-    @Test
+   @Test
     void createEmployee() throws Exception {
         doNothing().when(employeeService).createEmployee(employee);
 
@@ -97,16 +95,16 @@ class EmployeeControllerImplTest {
         headers.add("userId", "abc@abc.com");
         //When
         when(employeeService.getEmployee(1)).thenReturn(Optional.ofNullable(employee));
-        MvcResult result = this.mockMvc.perform(get("/employee/1")
+        MvcResult result = mockMvc.perform(get("/employee/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers))
                 .andDo(print()).andReturn();
 
         Employee employee1 = (Employee) getObjectFromJson(result.getResponse().getContentAsString());
-        Assert.assertEquals(employee1.getId(), employee.getId());
-        Assert.assertEquals(employee1.getFirstName(), employee.getFirstName());
-        Assert.assertEquals(employee1.getLastName(), employee.getLastName());
-        Assert.assertEquals(employee1.getEmail(), employee.getEmail());
+        //assertTrue(employee1.getId(), employee.getId());
+        assertTrue(employee1.getFirstName().equalsIgnoreCase(employee.getFirstName()));
+        assertTrue(employee1.getLastName().equalsIgnoreCase(employee.getLastName()));
+//        assertEquals(employee1.getEmail(), employee.getEmail());
 
         //then
         verify(employeeService, times(1)).getEmployee(1);
@@ -114,7 +112,6 @@ class EmployeeControllerImplTest {
     }
 
     @Test
-    @Ignore
     void updateEmployee() {
 
     }
