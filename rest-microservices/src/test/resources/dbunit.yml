@@ -1,0 +1,6 @@
+cacheConnection: true
+cacheTableNames: true
+caseInsensitiveStrategy: UPPERCASE
+properties:
+  caseSensitiveTableNames: false
+  

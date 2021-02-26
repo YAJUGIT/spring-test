@@ -22,15 +22,15 @@ public class Employee {
     int id;
 
     @NotNull
-    @Column(name="firstName")
+    @Column(name="FIRSTNAME")
     String firstName;
 
-    @Column(name="lastName")
+    @Column(name="LASTNAME")
     String lastName;
 
-    @Column(name="email")
+    @Column(name="EMAIL")
     String email;
 
-    @Column(name="phoneNumber")
+    @Column(name="PHONENUMBER")
     String phoneNumber;
 }

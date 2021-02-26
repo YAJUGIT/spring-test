@@ -3,6 +3,6 @@ CREATE TABLE IF NOT EXISTS employee (
   firstName VARCHAR(500) NOT NULL,
   lastName VARCHAR(500) NOT NULL,
   email VARCHAR(500) NOT NULL,
-  phoneNumber VARCHAR,
+  phonenumber VARCHAR(500),
   PRIMARY KEY (id)
 );

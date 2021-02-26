@@ -1,10 +1,16 @@
 package com.employee.repository;
 
+import com.employee.EmployeeApplication;
 import com.employee.entity.Employee;
 import com.github.database.rider.core.api.connection.ConnectionHolder;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.DBUnitExtension;
 import com.google.common.collect.Lists;
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.ext.mysql.MySqlMetadataHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,24 +19,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
-
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(DBUnitExtension.class)
-@SpringBootTest
-//@ActiveProfiles("test")
+@SpringBootTest(classes = {
+        EmployeeApplication.class,
+        EmployeeRepositoryTestConfiguration.class})
+@ActiveProfiles("test")
 class EmployeeRepoTest {
+
     @Autowired
-    DataSource dataSource;
+    DataSource testDataSource;
 
     @Autowired
     EmployeeRepo employeeRepo;
 
-    public ConnectionHolder getConnectionHolder() {
-        return () -> dataSource.getConnection();
+    public ConnectionHolder getConnectionHolder() throws SQLException, DatabaseUnitException {
+        final IDatabaseConnection connection = new DatabaseConnection(testDataSource.getConnection());
+        connection.getConfig()
+                .setProperty(DatabaseConfig.PROPERTY_METADATA_HANDLER, new MySqlMetadataHandler());
+        return () -> testDataSource.getConnection();
     }
 
     @Test
@@ -50,7 +60,7 @@ class EmployeeRepoTest {
         Assertions.assertEquals(1, e.getId(), "The widget ID should be 1");
         Assertions.assertEquals("Hareesh", e.getFirstName(), "Incorrect Employee name");
         Assertions.assertEquals("Chandra", e.getLastName(), "Incorrect Employee Last Name");
-      }
+    }
 
     @Test
     @DataSet("employee.yml")
@@ -61,7 +71,7 @@ class EmployeeRepoTest {
 
     @Test
     @DataSet("employee.yml")
-    void testFindWidgetsWithNameLike() {
+    void testFindEmployeesWithNameLike() {
         List<Employee> employee = employeeRepo.findEmployeesWithNameLike("Ghans%");
         Assertions.assertEquals(2, employee.size());
     }
