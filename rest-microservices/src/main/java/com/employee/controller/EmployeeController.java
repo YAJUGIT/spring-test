@@ -19,7 +19,7 @@ public interface EmployeeController extends BaseController{
                     responseHeaders = @ResponseHeader(name = "Location", description = "The resulting URI of the delete User's Pref", response = String.class))})
     @PostMapping(value = "/employee", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> createEmployee(@RequestBody EmployeeDTO employeeDTO);
+    public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO);
 
 
     @ApiResponses(value = {

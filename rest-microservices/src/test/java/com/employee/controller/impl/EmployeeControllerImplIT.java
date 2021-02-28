@@ -8,30 +8,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class EmployeeControllerImplIT {
     EmployeeDTO employeeDTO;
     Employee employee;
@@ -58,8 +59,6 @@ class EmployeeControllerImplIT {
 
     @BeforeEach
     void setUp() {
-//        MockitoAnnotations.initMocks(this);
-        employeeService = mock(EmployeeService.class);
         employeeDTO = EmployeeDTO.builder()
                 .id(1)
                 .firstName("firstName")
@@ -74,7 +73,7 @@ class EmployeeControllerImplIT {
     void tearDown() {
     }
 
-   @Test
+    @Test
     void createEmployee() throws Exception {
         doNothing().when(employeeService).createEmployee(employee);
 
@@ -83,32 +82,67 @@ class EmployeeControllerImplIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(EmployeeUtil.asJsonString(employeeDTO)))
                 .andExpect(status().isCreated());
-
-        //then
-        verify(employeeService, times(1)).createEmployee(employee);
-        verifyNoMoreInteractions(employeeService);
     }
 
     @Test
+    @DisplayName("GET /employee/1")
     void getEmployee() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.add("userId", "abc@abc.com");
         //When
-        when(employeeService.getEmployee(1)).thenReturn(Optional.ofNullable(employee));
-        MvcResult result = mockMvc.perform(get("/employee/1")
+        doReturn(Optional.ofNullable(employee)).when(employeeService).getEmployee(1);
+        MvcResult result = this.mockMvc.perform(get("/employee/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers))
                 .andDo(print()).andReturn();
 
         Employee employee1 = (Employee) getObjectFromJson(result.getResponse().getContentAsString());
-        //assertTrue(employee1.getId(), employee.getId());
-        assertTrue(employee1.getFirstName().equalsIgnoreCase(employee.getFirstName()));
-        assertTrue(employee1.getLastName().equalsIgnoreCase(employee.getLastName()));
-//        assertEquals(employee1.getEmail(), employee.getEmail());
+        assertEquals(result.getResponse().getStatus(), HttpStatus.OK.value());
+        assertEquals(employee1.getId(), employee.getId());
+        assertEquals(employee1.getFirstName(), employee.getFirstName());
+        assertEquals(employee1.getLastName(), employee.getLastName());
+        assertEquals(employee1.getEmail(), employee.getEmail());
 
         //then
         verify(employeeService, times(1)).getEmployee(1);
         verifyNoMoreInteractions(employeeService);
+    }
+
+    @Test
+    @DisplayName("GET /employees success")
+    void testGetWidgetsSuccess() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("userId", "abc@abc.com");
+        // Setup our mocked service
+        Employee employee1 = new Employee(1, "Stephen", "Colbert", "sbc.amail.com", "234-345-567");
+        Employee employee2 = new Employee(2, "Rama", "Chandra", "sbc.amail.com", "234-345-567");
+        //when
+        doReturn(Arrays.asList(employee1, employee2)).when(employeeService).findAll();
+        // Execute the GET request
+        mockMvc.perform(get("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers))
+
+                // Validate the response code and content type
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                // Validate headers
+                .andExpect(header().string(HttpHeaders.LOCATION, "/employees"))
+
+                // Validate the returned fields
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    @DisplayName("GET /employee/4 - Not Found")
+    void testGetEmployeeByIdNotFound() throws Exception {
+        // Setup our mocked service
+        doReturn(Optional.empty()).when(employeeService).getEmployee(4);
+
+        // Execute the GET request
+        mockMvc.perform(get("/employee/{id}", 4))
+                // Validate the response code
+                .andExpect(status().isNotFound());
     }
 
     @Test

@@ -26,7 +26,7 @@ public class EmployeeControllerImpl implements EmployeeController {
     }
 
     @Override
-    public ResponseEntity<String> createEmployee(EmployeeDTO employeeDTO) {
+    public ResponseEntity<?> createEmployee(EmployeeDTO employeeDTO) {
         employeeService.createEmployee(EmployeeUtil.getEmployee(employeeDTO));
         return new ResponseEntity<>(EmployeeConstants.EMPLOYEE_CREATION_SUCCESS, HttpStatus.CREATED);
     }
